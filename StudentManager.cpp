@@ -4,10 +4,11 @@
 #include <algorithm>
 #include "StudentManager.h"
 #include "Student.h"
+#include "GlobalPath.h"
 
 using namespace std;
 
-StudentManager::StudentManager(){
+StudentManager::StudentManager() {
     cout << "正在载入学生信息，请稍后..." << endl;
     inputStudentInfo();
     system("cls");
@@ -18,16 +19,17 @@ StudentManager::~StudentManager() = default;
 void StudentManager::showMenu() {  // 打印菜单
     cout << "********************************" << endl;
     cout << "********欢迎使用学生管理系统********" << endl;
-    cout << "**********1. 添加学生*************" << endl;
-    cout << "**********2. 查找学生信息**********" << endl;
-    cout << "**********3. 修改学生信息**********" << endl;
-    cout << "**********4. 删除学生信息**********" << endl;
-    cout << "**********5. 退出系统*************" << endl;
+    cout << "*********1. 添加学生**************" << endl;
+    cout << "*********2. 查找学生信息***********" << endl;
+    cout << "*********3. 修改学生信息***********" << endl;
+    cout << "*********4. 删除学生信息***********" << endl;
+    cout << "*********5. 查看所有学生信息********" << endl;
+    cout << "*********6. 退出系统**************" << endl;
     cout << "*********************************" << endl;
 }
 
 void StudentManager::inputStudentInfo() {  // 将外部文件数据加载到内存中
-    fstream ifs("../StudentInformation.txt", ios::in);  // 这个读取文件的路径是以exe文件为起始路径的
+    fstream ifs(StudentInformation, ios::in);  // 这个读取文件的路径是以exe文件为起始路径的
     if (ifs.is_open()){  // 检查是否正常打开
         while (ifs >> student_number >> name >> gender >> age){  // 有数据的话就写入
             Student s(student_number, name, gender, age);  // 用Student类接受数据，并创建自定义类型
@@ -51,7 +53,7 @@ void StudentManager::addStudent() {  // 添加学生
     cout << "请输入学生性别: ";
     cin >> t;
     if (t == "男") gender = true;  // gender在程序中以bool类型储存，所以要作转换
-    else gender = false;
+    else if (t == "女") gender = false;
     cout << "请输入学生年龄: ";
     cin >> age;
     Student s(student_number, name, gender, age);  // 创建新的学生类
@@ -113,4 +115,35 @@ FindBasedOnNum::FindBasedOnNum(int n){
 
 void StudentManager::modifyStudentInfo(){
 
+}
+
+void StudentManager::printErrInpLog(){
+    cout << "输入错误！" << endl;
+}
+
+void StudentManager::saveStudentInfo(){  // 保存学生信息
+    ofstream ofs;
+    ofs.open(StudentInformation, ios::out);
+    for (auto &i : info){
+        ofs << i.student_number << " " << i.name << " " << i.gender << " " << i.age << endl;
+    }
+    ofs.close();
+    cout << "学生信息保存完毕" << endl;
+}
+
+void StudentManager::exitSystem() {  // 退出系统
+    cout << "正在保存学生信息，请稍后..." << endl;
+    saveStudentInfo();
+    system("cls");
+}
+
+void StudentManager::displayAllStudents(){
+    if (!info.empty()){
+        for (auto i = info.begin(); i != info.end(); ++i){
+            displayStudentInfo(i);
+        }
+    }
+    else{
+        cout << "暂无学生信息" << endl;
+    }
 }

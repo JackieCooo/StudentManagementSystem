@@ -20,12 +20,16 @@ int main() {
                 cout << "请输入要添加学生的数目: ";
                 cin >> n;
                 for (int i = 0; i < n; ++i) {
+                    cout << "正在录入第" << i+1 << "个学生的信息: " << endl;
                     app.addStudent();
+                    cout << "第" << i+1 << "个学生的信息录入成功" << endl;
+                    system("pause");
                 }
                 break;
             }
             case 2:{  // 查找学生信息
                 app.findStudent();
+                system("pause");
                 break;
             }
             case 3:{  // 修改学生信息
@@ -35,8 +39,14 @@ int main() {
             case 4:{  // 删除学生信息
                 break;
             }
-            case 5:{  // 退出系统
-                cout << "退出成功" << endl;
+            case 5:{  // 查看所有学生信息
+                app.displayAllStudents();
+                system("pause");
+                break;
+            }
+            case 6:{  // 退出系统
+                app.exitSystem();
+                cout << "系统退出成功" << endl;
                 system("pause");
                 exit(0);
             }

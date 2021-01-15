@@ -19,11 +19,14 @@ public:
     void addStudent();
     void findStudent();
     void modifyStudentInfo();
+    void exitSystem();
+    void displayAllStudents();
 
 private:
     void inputStudentInfo();
     static void displayStudentInfo(list<Student>::iterator &i);
-
+    static void printErrInpLog();
+    void saveStudentInfo();
 };
 
 class FindBasedOnNum{  // 基于学号查找的谓词定义
