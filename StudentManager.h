@@ -1,6 +1,8 @@
 #pragma once
 #include "Student.h"
 #include <list>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -17,16 +19,19 @@ public:
     ~StudentManager();
     static void showMenu() ;
     void addStudent();
-    void findStudent();
+    void findStudentInfo();
     void modifyStudentInfo();
     void exitSystem();
     void displayAllStudents();
+    void deleteStudentInfo();
 
 private:
     void inputStudentInfo();
     static void displayStudentInfo(list<Student>::iterator &i);
     static void printErrInpLog();
     void saveStudentInfo();
+    list<Student>::iterator findStudent(int student_number);
+    vector<list<Student>::iterator> findStudent(string &name);
 };
 
 class FindBasedOnNum{  // 基于学号查找的谓词定义

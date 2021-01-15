@@ -28,15 +28,18 @@ int main() {
                 break;
             }
             case 2:{  // 查找学生信息
-                app.findStudent();
+                app.findStudentInfo();
                 system("pause");
                 break;
             }
             case 3:{  // 修改学生信息
                 app.modifyStudentInfo();
+                system("pause");
                 break;
             }
             case 4:{  // 删除学生信息
+                app.deleteStudentInfo();
+                system("pause");
                 break;
             }
             case 5:{  // 查看所有学生信息

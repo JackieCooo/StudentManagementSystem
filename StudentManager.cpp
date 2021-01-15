@@ -2,8 +2,8 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <vector>
 #include "StudentManager.h"
-#include "Student.h"
 #include "GlobalPath.h"
 
 using namespace std;
@@ -60,7 +60,7 @@ void StudentManager::addStudent() {  // 添加学生
     StudentManager::info.push_back(s);  // 追加到list
 }
 
-void StudentManager::findStudent() {  // 查找学生
+void StudentManager::findStudentInfo() {  // 查找学生
     int findMode = 0;
     cout << "请选择以哪种方式查找: " << endl;
     cout << "1. 学号" << endl;
@@ -70,27 +70,26 @@ void StudentManager::findStudent() {  // 查找学生
         int searchNum = 0;
         cout << "请输入学号: " ;
         cin >> searchNum;
-        auto index = find_if(info.begin(), info.end(), FindBasedOnNum(searchNum));
+        auto index = findStudent(searchNum);
         if (index != info.end()){
             displayStudentInfo(index);
         }
         else{
-            cout << "查不到此学生";
+            cout << "查不到此学生" << endl;
         }
     }
     else if (findMode == 2) {
         string searchName;
-        bool flag = false;  // 判断是否查到学生
         cout << "请输入姓名: ";
         cin >> searchName;
-        for (auto i = info.begin(); i != info.end(); ++i){  // 学生有可能有同名，所以不用find_if
-            if ((*i).name == searchName){
+        vector<list<Student>::iterator> v = findStudent(searchName);
+        if (!v.empty()){  // 检查vector是否为空，空即为查不到
+            for (auto &i : v){
                 displayStudentInfo(i);
-                flag = true;
             }
         }
-        if (!flag){
-            cout << "查不到此学生";
+        else{
+            cout << "查不到此学生" << endl;
         }
     }
     else{
@@ -113,7 +112,7 @@ FindBasedOnNum::FindBasedOnNum(int n){
     this->searchNum = n;
 }
 
-void StudentManager::modifyStudentInfo(){
+void StudentManager::modifyStudentInfo(){  // 修改学生信息
 
 }
 
@@ -137,7 +136,7 @@ void StudentManager::exitSystem() {  // 退出系统
     system("cls");
 }
 
-void StudentManager::displayAllStudents(){
+void StudentManager::displayAllStudents(){  // 查看所有学生信息
     if (!info.empty()){
         for (auto i = info.begin(); i != info.end(); ++i){
             displayStudentInfo(i);
@@ -146,4 +145,38 @@ void StudentManager::displayAllStudents(){
     else{
         cout << "暂无学生信息" << endl;
     }
+}
+
+void StudentManager::deleteStudentInfo(){  // 删除学生信息
+    int searchNum = 0;
+    cout << "请输入学生学号:" << endl;
+    cin >> searchNum;
+    auto index = findStudent(searchNum);
+    if (index != info.end()){
+        info.erase(index);  // 删除信息
+        cout << "学生信息删除成功" << endl;
+    }
+    else{
+        cout << "查不到此学生" << endl;
+    }
+}
+
+list<Student>::iterator StudentManager::findStudent(int searchNum){  // 查找功能函数，返回list的迭代器
+    auto index = find_if(info.begin(), info.end(), FindBasedOnNum(searchNum));
+    if (index != info.end()){
+        return index;
+    }
+    else{
+        return info.end();
+    }
+}
+
+vector<list<Student>::iterator> StudentManager::findStudent(string &searchName){  // 查找功能函数，返回以list的迭代器为元素的vector
+    vector<list<Student>::iterator> res;
+    for (auto i = info.begin(); i != info.end(); ++i){  // 学生有可能有同名，所以不用find_if
+        if ((*i).name == searchName){
+            res.push_back(i);
+        }
+    }
+    return res;
 }
