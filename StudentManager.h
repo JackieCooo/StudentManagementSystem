@@ -18,7 +18,7 @@ public:
     StudentManager();
     ~StudentManager();
     static void showMenu() ;
-    void addStudent();
+    void addStudentInfo();
     void findStudentInfo();
     void modifyStudentInfo();
     void exitSystem();
@@ -28,11 +28,11 @@ public:
 private:
     void inputStudentInfo();
     static void displayStudentInfo(list<Student>::iterator &i);
-    static void printErrInpLog();
     void saveStudentInfo();
     list<Student>::iterator findStudent(int student_number);
     vector<list<Student>::iterator> findStudent(string &name);
     static void modifyFunction(list<Student>::iterator &i);
+    void addStudentFunction();
 };
 
 class FindBasedOnNum{  // 基于学号查找的谓词定义

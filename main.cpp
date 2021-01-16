@@ -12,15 +12,7 @@ int main() {
         cin >> op;
         switch (op) {
             case 1:{  // 添加学生
-                int n;
-                cout << "请输入要添加学生的数目: ";
-                cin >> n;
-                for (int i = 0; i < n; ++i) {
-                    cout << "正在录入第" << i+1 << "个学生的信息: " << endl;
-                    app.addStudent();
-                    cout << "第" << i+1 << "个学生的信息录入成功" << endl;
-                }
-                cout << "所有学生信息已录入" << endl;
+                app.addStudentInfo();
                 system("pause");
                 break;
             }

@@ -44,7 +44,7 @@ void StudentManager::inputStudentInfo() {  // ½«Íâ²¿ÎÄ¼şÊı¾İ¼ÓÔØµ½ÄÚ´æÖĞ
     ifs.close();
 }
 
-void StudentManager::addStudent() {  // Ìí¼ÓÑ§Éú
+void StudentManager::addStudentFunction() {  // Ìí¼ÓÑ§Éú¹¦ÄÜº¯Êı
     string t;
     cout << "ÇëÊäÈëÑ§ÉúÑ§ºÅ: ";
     cin >> student_number;
@@ -52,6 +52,10 @@ void StudentManager::addStudent() {  // Ìí¼ÓÑ§Éú
     cin >> name;
     cout << "ÇëÊäÈëÑ§ÉúĞÔ±ğ: ";
     cin >> t;
+    while (t != "ÄĞ" || t != "Å®"){
+        cout << "ÊäÈë´íÎóÇëÖØĞÂÊäÈë: ";
+        cin >> t;
+    }
     if (t == "ÄĞ") gender = true;  // genderÔÚ³ÌĞòÖĞÒÔboolÀàĞÍ´¢´æ£¬ËùÒÔÒª×÷×ª»»
     else if (t == "Å®") gender = false;
     cout << "ÇëÊäÈëÑ§ÉúÄêÁä: ";
@@ -150,10 +154,6 @@ void StudentManager::modifyStudentInfo(){  // ĞŞ¸ÄÑ§ÉúĞÅÏ¢
             cout << "²é²»µ½´ËÑ§Éú" << endl;
         }
     }
-}
-
-void StudentManager::printErrInpLog(){
-    cout << "ÊäÈë´íÎó£¡" << endl;
 }
 
 void StudentManager::saveStudentInfo(){  // ±£´æÑ§ÉúĞÅÏ¢
@@ -281,6 +281,10 @@ void StudentManager::modifyFunction(list<Student>::iterator &i){  // ĞŞ¸ÄÑ§ÉúĞÅÏ
                 string changeGender;
                 cout << "ÇëÊäÈëĞŞ¸ÄºóµÄĞÔ±ğ: ";
                 cin >> changeGender;
+                while (changeGender != "ÄĞ" || changeGender != "Å®"){
+                    cout << "ÊäÈë´íÎóÇëÖØĞÂÊäÈë: ";
+                    cin >> changeGender;
+                }
                 if (changeGender == "ÄĞ") i->gender = true;
                 else if (changeGender == "Å®") i->gender = false;
                 cout << "ĞŞ¸Ä³É¹¦" << endl;
@@ -299,5 +303,49 @@ void StudentManager::modifyFunction(list<Student>::iterator &i){  // ĞŞ¸ÄÑ§ÉúĞÅÏ
             }
         }
         if (flag) break;
+    }
+}
+
+void StudentManager::addStudentInfo(){  // Ìí¼ÓÑ§Éú
+    int mode = 0;
+    cout << "ÇëÑ¡ÔñÌí¼Ó·½Ê½: " << endl;
+    cout << "1. ÃüÁîĞĞÊäÈë" << endl;
+    cout << "2. Íâ²¿ÎÄ¼şÂ¼Èë" << endl;  // ½öÖ§³ÖtxtÎÄ¼ş
+    cin >> mode;
+    switch (mode) {
+        case 1:{
+            int n;
+            cout << "ÇëÊäÈëÒªÌí¼ÓÑ§ÉúµÄÊıÄ¿: ";
+            cin >> n;
+            for (int i = 0; i < n; ++i) {
+                cout << "ÕıÔÚÂ¼ÈëµÚ" << i+1 << "¸öÑ§ÉúµÄĞÅÏ¢: " << endl;
+                addStudentFunction();
+                cout << "µÚ" << i+1 << "¸öÑ§ÉúµÄĞÅÏ¢Â¼Èë³É¹¦" << endl;
+            }
+            cout << "ËùÓĞÑ§ÉúĞÅÏ¢ÒÑÂ¼Èë" << endl;
+            break;
+        }
+        case 2:{
+            cout << "ÇëÊäÈëÎÄ¼şÂ·¾¶: ";  // Ïà¶ÔÂ·¾¶¡¢¾ø¶ÔÂ·¾¶¾ù¿É
+            string filepath;
+            cin >> filepath;
+            fstream ifs(filepath, ios::in);  // Õâ¸ö¶ÁÈ¡ÎÄ¼şµÄÂ·¾¶ÊÇÒÔexeÎÄ¼şÎªÆğÊ¼Â·¾¶µÄ
+            if (ifs.is_open()){  // ¼ì²éÊÇ·ñÕı³£´ò¿ª
+                while (ifs >> student_number >> name >> gender >> age){  // ÓĞÊı¾İµÄ»°¾ÍĞ´Èë
+                    Student s(student_number, name, gender, age);  // ÓÃStudentÀà½ÓÊÜÊı¾İ£¬²¢´´½¨×Ô¶¨ÒåÀàĞÍ
+                    StudentManager::info.push_back(s);  // ½«¸ÃÑ§ÉúÊı¾İ¼ÓÈëµ½listÖĞ
+                }
+                cout << "Ñ§ÉúÊı¾İÂ¼ÈëÍê±Ï" << endl;
+            }
+            else{
+                cout << "ÎÄ¼şÎŞ·¨´ò¿ª" << endl;
+                return;
+            }
+            ifs.close();
+            break;
+        }
+        default:{
+            break;
+        }
     }
 }
