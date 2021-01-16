@@ -24,7 +24,10 @@ void StudentManager::showMenu() {  // 打印菜单
     cout << "*********3. 修改学生信息***********" << endl;
     cout << "*********4. 删除学生信息***********" << endl;
     cout << "*********5. 查看所有学生信息********" << endl;
-    cout << "*********6. 退出系统**************" << endl;
+    cout << "*********6. 批量录入学生成绩********" << endl;
+    cout << "*********7. 查看所有学生成绩********" << endl;
+    cout << "*********8. 修改学生成绩***********" << endl;
+    cout << "*********9. 退出系统**************" << endl;
     cout << "*********************************" << endl;
 }
 
@@ -64,96 +67,11 @@ void StudentManager::addStudentFunction() {  // 添加学生功能函数
     StudentManager::info.push_back(s);  // 追加到list
 }
 
-void StudentManager::findStudentInfo() {  // 查找学生
-    int findMode = 0;
-    cout << "请选择以哪种方式查找: " << endl;
-    cout << "1. 学号" << endl;
-    cout << "2. 姓名" << endl;
-    cin >> findMode;
-    if (findMode == 1) {
-        int searchNum = 0;
-        cout << "请输入学号: " ;
-        cin >> searchNum;
-        auto index = findStudent(searchNum);
-        if (index != info.end()){
-            displayStudentInfo(index);
-        }
-        else{
-            cout << "查不到此学生" << endl;
-        }
-    }
-    else if (findMode == 2) {
-        string searchName;
-        cout << "请输入姓名: ";
-        cin >> searchName;
-        vector<list<Student>::iterator> v = findStudent(searchName);
-        if (!v.empty()){  // 检查vector是否为空，空即为查不到
-            for (auto &i : v){
-                displayStudentInfo(i);
-            }
-        }
-        else{
-            cout << "查不到此学生" << endl;
-        }
-    }
-    else{
-
-    }
-}
-
 void StudentManager::displayStudentInfo(list<Student>::iterator &i){  // 打印学生信息
     cout << "学号: " << i->student_number << "\t姓名: " << i->name << "\t性别: ";
     if (i->gender == 1) cout << "男";
     else cout << "女";
     cout << "\t年龄: " << i->age << endl;
-}
-
-bool FindBasedOnNum::operator()(Student &s) const{
-    return s.student_number == searchNum;
-}
-
-FindBasedOnNum::FindBasedOnNum(int n){
-    this->searchNum = n;
-}
-
-void StudentManager::modifyStudentInfo(){  // 修改学生信息
-    cout << "请选择查找方式: " << endl;
-    cout << "1. 学号" << endl;
-    cout << "2. 姓名" << endl;
-    int mode = 0;
-    cin >> mode;
-    if (mode == 1){
-        int searchNum = 0;
-        cout << "请输入学生学号:" << endl;
-        cin >> searchNum;
-        auto index = findStudent(searchNum);
-        if (index != info.end()){
-            modifyFunction(index);
-        }
-        else{
-            cout << "查不到此学生" << endl;
-        }
-    }
-    else if (mode == 2){
-        string searchName;
-        cout << "请输入学生姓名: ";
-        cin >> searchName;
-        vector<list<Student>::iterator> v = findStudent(searchName);
-        if (!v.empty()){
-            int j = 1;
-            for (auto &i : v){
-                cout << "序号: " << j++ << "\t";
-                displayStudentInfo(i);
-            }
-            cout << "输入要修改的学生的序号: ";
-            int n;
-            cin >> n;
-            modifyFunction(v[n]);
-        }
-        else {
-            cout << "查不到此学生" << endl;
-        }
-    }
 }
 
 void StudentManager::saveStudentInfo(){  // 保存学生信息
@@ -191,12 +109,11 @@ void StudentManager::deleteStudentInfo(){  // 删除学生信息
     cin >> mode;
     if (mode == 1){
         int searchNum = 0;
-        cout << "请输入学生学号:";
+        cout << "请输入学生学号:" << endl;
         cin >> searchNum;
         auto index = findStudent(searchNum);
         if (index != info.end()){
-            info.erase(index);  // 删除信息
-            cout << "学生信息删除成功" << endl;
+            info.erase(index);
         }
         else{
             cout << "查不到此学生" << endl;
@@ -213,7 +130,7 @@ void StudentManager::deleteStudentInfo(){  // 删除学生信息
                 cout << "序号: " << j++ << "\t";
                 displayStudentInfo(i);
             }
-            cout << "输入要删除的学生的序号: ";
+            cout << "输入要修改的学生的序号: ";
             int n;
             cin >> n;
             info.erase(v[n-1]);
@@ -244,7 +161,7 @@ vector<list<Student>::iterator> StudentManager::findStudent(string &searchName){
     return res;
 }
 
-void StudentManager::modifyFunction(list<Student>::iterator &i){  // 修改学生信息功能函数
+void StudentManager::modifyStudentInfo(list<Student>::iterator &i){  // 修改学生信息功能函数
     int mode = 0;
     bool flag = false;  // while退出标志
     cout << "请输入要修改学生的信息: " << endl;
@@ -348,4 +265,121 @@ void StudentManager::addStudentInfo(){  // 添加学生
             break;
         }
     }
+}
+
+void StudentManager::uploadStudentScores(){  // 学生成绩录入
+    cout << "请输入录入的方式: " << endl;
+    cout << "1. 命令行录入" << endl;
+    cout << "2. 外部文件录入" << endl;
+    int mode = 0;
+    cin >> mode;
+    if (mode == 1){
+        uploadScoresFunction();
+    }
+    else if (mode == 2){
+
+    }
+}
+
+void StudentManager::uploadScoresFunction(){  // 成绩录入功能函数
+    cout << "请选择要录入的科目: " << endl;
+    cout << "0. 增添科目" << endl;
+    if (!info.front().score.empty()){  // 判断成绩列表是否为空
+        int j = 1;
+        for (auto &i : info.front().score) {  // 依次输出科目
+            cout << j++ << ". " << i.subject << endl;
+        }
+    }
+    int choice;
+    cin >> choice;
+    string subjectName;
+    if (choice == 0){
+        cout << "请输入科目名: ";
+        cin >> subjectName;
+        if (find_if(info.front().score.begin(), info.front().score.end(), FindBasedOnString(subjectName)) != info.front().score.end()){  // 查看是否已经有此科目
+            cout << "此科目已存在" << endl;
+        }
+    }
+    for (auto &i : info){  // 逐个学生录入
+        int n;
+        cout << "请输入学号为" << i.student_number << "的" << i.name << "同学的" << i.score[choice-1].subject << "成绩: ";
+        cin >> n;  // 这里如果想跳过该同学的成绩录入，键入-1
+        if (!choice){  // 若此科目为新加科目
+            Score s(subjectName, n);  // 创建新Score类
+            i.score.push_back(s);  // 压入vector
+        }
+        else{
+            i.score[choice-1].score = n;
+        }
+    }
+}
+
+void StudentManager::displayAllStudentScores(){  // 输出全部学生成绩
+    for (auto &i : info){
+        cout << "学号: " << i.student_number << "\t姓名: " << i.name << "\t";
+        for (auto &j : i.score){
+            cout << j.subject << ": " << j.score << "\t";
+        }
+        cout << endl;
+    }
+}
+
+void StudentManager::findClass(void (*pointerToFunc)(list<Student>::iterator &i)) {
+    cout << "请选择查找方式: " << endl;
+    cout << "1. 学号" << endl;
+    cout << "2. 姓名" << endl;
+    int mode = 0;
+    cin >> mode;
+    if (mode == 1){
+        int searchNum = 0;
+        cout << "请输入学生学号:" << endl;
+        cin >> searchNum;
+        auto index = findStudent(searchNum);
+        if (index != info.end()){
+            (*pointerToFunc)(index);
+        }
+        else{
+            cout << "查不到此学生" << endl;
+        }
+    }
+    else if (mode == 2){
+        string searchName;
+        cout << "请输入学生姓名: ";
+        cin >> searchName;
+        vector<list<Student>::iterator> v = findStudent(searchName);
+        if (!v.empty()){
+            int j = 1;
+            for (auto &i : v){
+                cout << "序号: " << j++ << "\t";
+                displayStudentInfo(i);
+            }
+            cout << "输入要修改的学生的序号: ";
+            int n;
+            cin >> n;
+            (*pointerToFunc)(v[n-1]);
+        }
+        else {
+            cout << "查不到此学生" << endl;
+        }
+    }
+}
+
+void StudentManager::modifyStudentScore() {  // 修改学生成绩
+
+}
+
+bool FindBasedOnNum::operator()(Student &s) const{
+    return s.student_number == searchNum;
+}
+
+FindBasedOnNum::FindBasedOnNum(int n){
+    this->searchNum = n;
+}
+
+FindBasedOnString::FindBasedOnString(string &s){
+    this->searchStr = s;
+}
+
+bool FindBasedOnString::operator()(Score &s) const{
+    return s.subject == searchStr;
 }

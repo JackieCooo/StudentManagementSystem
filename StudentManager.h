@@ -19,26 +19,37 @@ public:
     ~StudentManager();
     static void showMenu() ;
     void addStudentInfo();
-    void findStudentInfo();
-    void modifyStudentInfo();
     void exitSystem();
     void displayAllStudents();
     void deleteStudentInfo();
+    void uploadStudentScores();
+    void displayAllStudentScores();
+    void modifyStudentScore();
+    void findClass(void (*pointerToFunc)(list<Student>::iterator &i));
+    static void displayStudentInfo(list<Student>::iterator &i);
+    static void modifyStudentInfo(list<Student>::iterator &i);
 
 private:
     void inputStudentInfo();
-    static void displayStudentInfo(list<Student>::iterator &i);
     void saveStudentInfo();
     list<Student>::iterator findStudent(int student_number);
     vector<list<Student>::iterator> findStudent(string &name);
-    static void modifyFunction(list<Student>::iterator &i);
     void addStudentFunction();
+    void uploadScoresFunction();
 };
 
-class FindBasedOnNum{  // 基于学号查找的谓词定义
+class FindBasedOnNum{  // 基于int查找的谓词定义
 public:
     explicit FindBasedOnNum(int n);
     bool operator()(Student &s) const;
 private:
     int searchNum = 0;
+};
+
+class FindBasedOnString{  // 基于string查找的谓词定义
+public:
+    explicit FindBasedOnString(string &s);
+    bool operator()(Score &s) const;
+private:
+    string searchStr;
 };

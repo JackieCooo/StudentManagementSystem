@@ -17,12 +17,12 @@ int main() {
                 break;
             }
             case 2:{  // 查找学生信息
-                app.findStudentInfo();
+                app.findClass(StudentManager::displayStudentInfo);
                 system("pause");
                 break;
             }
             case 3:{  // 修改学生信息
-                app.modifyStudentInfo();
+                app.findClass(StudentManager::modifyStudentInfo);
                 system("pause");
                 break;
             }
@@ -36,7 +36,21 @@ int main() {
                 system("pause");
                 break;
             }
-            case 6:{  // 退出系统
+            case 6:{  // 录入学生成绩
+                app.uploadStudentScores();
+                system("pause");
+                break;
+            }
+            case 7:{  // 查看所有学生成绩
+                app.displayAllStudentScores();
+                system("pause");
+                break;
+            }
+            case 8:{  // 修改学生成绩
+                system("pause");
+                break;
+            }
+            case 9:{  // 退出系统
                 app.exitSystem();
                 cout << "系统退出成功" << endl;
                 system("pause");
