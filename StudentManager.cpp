@@ -113,7 +113,43 @@ FindBasedOnNum::FindBasedOnNum(int n){
 }
 
 void StudentManager::modifyStudentInfo(){  // 修改学生信息
-
+    cout << "请选择查找方式: " << endl;
+    cout << "1. 学号" << endl;
+    cout << "2. 姓名" << endl;
+    int mode = 0;
+    cin >> mode;
+    if (mode == 1){
+        int searchNum = 0;
+        cout << "请输入学生学号:" << endl;
+        cin >> searchNum;
+        auto index = findStudent(searchNum);
+        if (index != info.end()){
+            modifyFunction(index);
+        }
+        else{
+            cout << "查不到此学生" << endl;
+        }
+    }
+    else if (mode == 2){
+        string searchName;
+        cout << "请输入学生姓名: ";
+        cin >> searchName;
+        vector<list<Student>::iterator> v = findStudent(searchName);
+        if (!v.empty()){
+            int j = 1;
+            for (auto &i : v){
+                cout << "序号: " << j++ << "\t";
+                displayStudentInfo(i);
+            }
+            cout << "输入要修改的学生的序号: ";
+            int n;
+            cin >> n;
+            modifyFunction(v[n]);
+        }
+        else {
+            cout << "查不到此学生" << endl;
+        }
+    }
 }
 
 void StudentManager::printErrInpLog(){
@@ -148,16 +184,43 @@ void StudentManager::displayAllStudents(){  // 查看所有学生信息
 }
 
 void StudentManager::deleteStudentInfo(){  // 删除学生信息
-    int searchNum = 0;
-    cout << "请输入学生学号:" << endl;
-    cin >> searchNum;
-    auto index = findStudent(searchNum);
-    if (index != info.end()){
-        info.erase(index);  // 删除信息
-        cout << "学生信息删除成功" << endl;
+    cout << "请选择查找方式: " << endl;
+    cout << "1. 学号" << endl;
+    cout << "2. 姓名" << endl;
+    int mode = 0;
+    cin >> mode;
+    if (mode == 1){
+        int searchNum = 0;
+        cout << "请输入学生学号:";
+        cin >> searchNum;
+        auto index = findStudent(searchNum);
+        if (index != info.end()){
+            info.erase(index);  // 删除信息
+            cout << "学生信息删除成功" << endl;
+        }
+        else{
+            cout << "查不到此学生" << endl;
+        }
     }
-    else{
-        cout << "查不到此学生" << endl;
+    else if (mode == 2){
+        string searchName;
+        cout << "请输入学生姓名: ";
+        cin >> searchName;
+        vector<list<Student>::iterator> v = findStudent(searchName);
+        if (!v.empty()){
+            int j = 1;
+            for (auto &i : v){
+                cout << "序号: " << j++ << "\t";
+                displayStudentInfo(i);
+            }
+            cout << "输入要删除的学生的序号: ";
+            int n;
+            cin >> n;
+            info.erase(v[n-1]);
+        }
+        else {
+            cout << "查不到此学生" << endl;
+        }
     }
 }
 
@@ -179,4 +242,62 @@ vector<list<Student>::iterator> StudentManager::findStudent(string &searchName){
         }
     }
     return res;
+}
+
+void StudentManager::modifyFunction(list<Student>::iterator &i){  // 修改学生信息功能函数
+    int mode = 0;
+    bool flag = false;  // while退出标志
+    cout << "请输入要修改学生的信息: " << endl;
+    cout << "1. 学号" << endl;
+    cout << "2. 姓名" << endl;
+    cout << "3. 性别" << endl;
+    cout << "4. 年龄" << endl;
+    cout << "输入0退出此学生信息的修改" << endl;
+    while (true){
+        cin >> mode;
+        switch (mode) {
+            case 0:{  // 退出修改
+                cout << "此学生修改已保存" << endl;
+                flag = true;
+                break;
+            }
+            case 1:{  // 修改学号
+                int changeNum = 0;
+                cout << "请输入修改后的学号: ";
+                cin >> changeNum;
+                i->student_number = changeNum;
+                cout << "修改成功" << endl;
+                break;
+            }
+            case 2:{  // 修改姓名
+                string changeName;
+                cout << "请输入修改后的姓名: ";
+                cin >> changeName;
+                i->name = changeName;
+                cout << "修改成功" << endl;
+                break;
+            }
+            case 3:{  // 修改性别
+                string changeGender;
+                cout << "请输入修改后的性别: ";
+                cin >> changeGender;
+                if (changeGender == "男") i->gender = true;
+                else if (changeGender == "女") i->gender = false;
+                cout << "修改成功" << endl;
+                break;
+            }
+            case 4:{  // 修改年龄
+                int changeAge = 0;
+                cout << "请输入修改后的年龄: ";
+                cin >> changeAge;
+                i->age = changeAge;
+                cout << "修改成功" << endl;
+                break;
+            }
+            default:{
+                break;
+            }
+        }
+        if (flag) break;
+    }
 }

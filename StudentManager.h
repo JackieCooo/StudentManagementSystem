@@ -32,6 +32,7 @@ private:
     void saveStudentInfo();
     list<Student>::iterator findStudent(int student_number);
     vector<list<Student>::iterator> findStudent(string &name);
+    static void modifyFunction(list<Student>::iterator &i);
 };
 
 class FindBasedOnNum{  // 基于学号查找的谓词定义

@@ -3,15 +3,11 @@
 
 using namespace std;
 
-void printInputErrLog(){  // 打印输入错误信息
-    cout << "输入错误！" << endl;
-}
-
 int main() {
     StudentManager app;
     int op = 0;
     while (true){
-        StudentManager::showMenu();
+        StudentManager::showMenu();  // 显示目录
         cout << "输入你的选择: ";
         cin >> op;
         switch (op) {
@@ -23,8 +19,9 @@ int main() {
                     cout << "正在录入第" << i+1 << "个学生的信息: " << endl;
                     app.addStudent();
                     cout << "第" << i+1 << "个学生的信息录入成功" << endl;
-                    system("pause");
                 }
+                cout << "所有学生信息已录入" << endl;
+                system("pause");
                 break;
             }
             case 2:{  // 查找学生信息
@@ -54,7 +51,6 @@ int main() {
                 exit(0);
             }
             default:{
-                printInputErrLog();
                 system("pause");
                 system("cls");
                 break;
