@@ -47,6 +47,7 @@ int main() {
                 break;
             }
             case 8:{  // 修改学生成绩
+                app.modifyStudentScore();
                 system("pause");
                 break;
             }

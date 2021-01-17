@@ -36,6 +36,7 @@ private:
     vector<list<Student>::iterator> findStudent(string &name);
     void addStudentFunction();
     void uploadScoresFunction();
+    void modifyStudentScoreFunction(list<Student>::iterator &i);
 };
 
 class FindBasedOnNum{  // 基于int查找的谓词定义

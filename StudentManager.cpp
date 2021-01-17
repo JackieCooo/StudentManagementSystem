@@ -34,11 +34,35 @@ void StudentManager::showMenu() {  // ´òÓ¡²Ëµ¥
 void StudentManager::inputStudentInfo() {  // ½«Íâ²¿ÎÄ¼şÊı¾İ¼ÓÔØµ½ÄÚ´æÖĞ
     fstream ifs(StudentInformation, ios::in);  // Õâ¸ö¶ÁÈ¡ÎÄ¼şµÄÂ·¾¶ÊÇÒÔexeÎÄ¼şÎªÆğÊ¼Â·¾¶µÄ
     if (ifs.is_open()){  // ¼ì²éÊÇ·ñÕı³£´ò¿ª
-        while (ifs >> student_number >> name >> gender >> age){  // ÓĞÊı¾İµÄ»°¾ÍĞ´Èë
+        while (true){
+            string d1, d2, d3, d4;
+            ifs >> d1 >> d2 >> d3 >> d4;
+            if (d1 == "-" && d2 == "-" && d3 == "-" && d4 == "-") break;  // 4Ìõ-£¬±íÊ¾ĞÅÏ¢Êı¾İ½ÓÊÜ½áÊø
+            student_number = stoi(d1);
+            name = d2;
+            gender = stoi(d3);
+            age = stoi(d4);
             Student s(student_number, name, gender, age);  // ÓÃStudentÀà½ÓÊÜÊı¾İ£¬²¢´´½¨×Ô¶¨ÒåÀàĞÍ
-            StudentManager::info.push_back(s);  // ½«¸ÃÑ§ÉúÊı¾İ¼ÓÈëµ½listÖĞ
+            info.push_back(s);  // ½«¸ÃÑ§ÉúÊı¾İ¼ÓÈëµ½listÖĞ
         }
         cout << "Ñ§ÉúÊı¾İÔØÈëÍê±Ï" << endl;
+        vector<string> v;
+        while (true){
+            string d;
+            ifs >> d;
+            if (d == "-") break;  // ±íÊ¾¿ÆÄ¿ÀàĞÍ½ÓÊÜ½áÊø
+            v.push_back(d);  // ÏÈÓÃvector±£´æ¿ÆÄ¿ÀàĞÍ
+        }
+        // ÔØÈëÑ§Éú³É¼¨
+        for (auto &i : info) {
+            for (auto & j : v) {
+                int d;
+                ifs >> d;
+                Score s(j, d);
+                i.score.push_back(s);
+            }
+        }
+        cout << "Ñ§Éú³É¼¨ÔØÈëÍê±Ï" << endl;
     }
     else{
         cout << "ÎÄ¼şÎŞ·¨´ò¿ª" << endl;
@@ -77,8 +101,21 @@ void StudentManager::displayStudentInfo(list<Student>::iterator &i){  // ´òÓ¡Ñ§É
 void StudentManager::saveStudentInfo(){  // ±£´æÑ§ÉúĞÅÏ¢
     ofstream ofs;
     ofs.open(StudentInformation, ios::out);
-    for (auto &i : info){
+    for (auto &i : info){  // ±£´æÑ§ÉúĞÅÏ¢
         ofs << i.student_number << " " << i.name << " " << i.gender << " " << i.age << endl;
+    }
+    ofs << "- - - -" << endl;
+    if (!info.empty()){  // ±£´æ¿ÆÄ¿ÀàĞÍ
+        for (auto &i : info.front().score){
+            ofs << i.subject << endl;
+        }
+    }
+    ofs << "-" << endl;
+    for (auto &i : info){  // ±£´æ³É¼¨
+        for (auto &j : i.score){
+            ofs << j.score << " ";
+        }
+        ofs << endl;
     }
     ofs.close();
     cout << "Ñ§ÉúĞÅÏ¢±£´æÍê±Ï" << endl;
@@ -249,8 +286,27 @@ void StudentManager::addStudentInfo(){  // Ìí¼ÓÑ§Éú
             fstream ifs(filepath, ios::in);  // Õâ¸ö¶ÁÈ¡ÎÄ¼şµÄÂ·¾¶ÊÇÒÔexeÎÄ¼şÎªÆğÊ¼Â·¾¶µÄ
             if (ifs.is_open()){  // ¼ì²éÊÇ·ñÕı³£´ò¿ª
                 while (ifs >> student_number >> name >> gender >> age){  // ÓĞÊı¾İµÄ»°¾ÍĞ´Èë
-                    Student s(student_number, name, gender, age);  // ÓÃStudentÀà½ÓÊÜÊı¾İ£¬²¢´´½¨×Ô¶¨ÒåÀàĞÍ
-                    StudentManager::info.push_back(s);  // ½«¸ÃÑ§ÉúÊı¾İ¼ÓÈëµ½listÖĞ
+                    auto index = find_if(info.begin(), info.end(), FindBasedOnNum(student_number));
+                    if (index != info.end()){  // ¼ì²éÊÇ·ñÓĞÒÑ´æÔÚÑ§ÉúĞÅÏ¢£¬»ùÓÚÑ§ºÅ£¬ÒòÎªÑ§ºÅ²»ÄÜÖØ¸´
+                        cout << "Ô­ÎÄ¼ş: " << endl;
+                        displayStudentInfo(index);
+                        cout << "Íâ²¿ÎÄ¼ş: " << endl;
+                        cout << "Ñ§ºÅ: " << student_number << "\tĞÕÃû: " << name << "\tĞÔ±ğ: ";
+                        if (gender == 1) cout << "ÄĞ";
+                        else cout << "Å®";
+                        cout << "\tÄêÁä: " << age << endl;
+                        cout << "ÒÔÉÏĞÅÏ¢ÓĞÖØµş£¬ÊÇ·ñÒª¸²¸Ç(y/n): ";
+                        char choice;
+                        cin >> choice;
+                        if (choice == 'y'){
+                            Student s(student_number, name, gender, age);  // ÓÃStudentÀà½ÓÊÜÊı¾İ£¬²¢´´½¨×Ô¶¨ÒåÀàĞÍ
+                            info.push_back(s);  // ½«¸ÃÑ§ÉúÊı¾İ¼ÓÈëµ½listÖĞ
+                        }
+                    }
+                    else{
+                        Student s(student_number, name, gender, age);  // ÓÃStudentÀà½ÓÊÜÊı¾İ£¬²¢´´½¨×Ô¶¨ÒåÀàĞÍ
+                        info.push_back(s);  // ½«¸ÃÑ§ÉúÊı¾İ¼ÓÈëµ½listÖĞ
+                    }
                 }
                 cout << "Ñ§ÉúÊı¾İÂ¼ÈëÍê±Ï" << endl;
             }
@@ -268,6 +324,10 @@ void StudentManager::addStudentInfo(){  // Ìí¼ÓÑ§Éú
 }
 
 void StudentManager::uploadStudentScores(){  // Ñ§Éú³É¼¨Â¼Èë
+    if (info.empty()){
+        cout << "Ã»ÓĞÈÎºÎÑ§ÉúĞÅÏ¢£¬ÇëÌí¼ÓÑ§Éú" << endl;
+        return;
+    }
     cout << "ÇëÊäÈëÂ¼ÈëµÄ·½Ê½: " << endl;
     cout << "1. ÃüÁîĞĞÂ¼Èë" << endl;
     cout << "2. Íâ²¿ÎÄ¼şÂ¼Èë" << endl;
@@ -277,7 +337,56 @@ void StudentManager::uploadStudentScores(){  // Ñ§Éú³É¼¨Â¼Èë
         uploadScoresFunction();
     }
     else if (mode == 2){
-
+        cout << "ÇëÊäÈëÎÄ¼şÂ·¾¶: ";  // Ïà¶ÔÂ·¾¶¡¢¾ø¶ÔÂ·¾¶¾ù¿É
+        string filepath;
+        cin >> filepath;
+        fstream ifs(filepath, ios::in);  // Õâ¸ö¶ÁÈ¡ÎÄ¼şµÄÂ·¾¶ÊÇÒÔexeÎÄ¼şÎªÆğÊ¼Â·¾¶µÄ
+        if (ifs.is_open()){  // ¼ì²éÊÇ·ñÕı³£´ò¿ª
+            vector<string>v;
+            while (true){  // Â¼Èë¿ÆÄ¿ÀàĞÍ
+                string d;
+                ifs >> d;
+                if (d == "-") break;  // ±íÊ¾¿ÆÄ¿ÀàĞÍÂ¼Èë½áÊø
+                v.push_back(d);
+            }
+            int temp[v.size()][info.size()];  // ÏÈÁÙÊ±ÓÃÊı×é´æ³É¼¨
+            for (int i = 0; i < v.size(); ++i) {
+                for (int j = 0; j < info.size(); ++j) {
+                    ifs >> temp[i][j];
+                }
+            }
+            for (int i = 0; i < v.size(); ++i){  // Öğ¸ö¿ÆÄ¿Â¼Èë
+                auto index = find_if(info.front().score.begin(), info.front().score.end(), FindBasedOnString(v[i]));
+                if (index != info.front().score.end()){  // ¼ì²éÊÇ·ñÓĞÒÑ´æÔÚ¸Ã¿ÆÄ¿³É¼¨
+                    cout << index->subject << "³É¼¨ÒÑ´æÔÚ£¬ÊÇ·ñÒª¸²¸Ç(y/n): ";
+                    char choice;
+                    cin >> choice;
+                    if (choice == 'y'){
+                        int k = 0;
+                        for (auto &j : info){  // Öğ¸öÑ§ÉúÂ¼Èë
+                            index = find_if(j.score.begin(), j.score.end(), FindBasedOnString(v[i]));  // Ñ°ÕÒ³É¼¨Î»ÖÃ
+                            index->score = temp[i][k];  // ĞŞ¸Ä³É¼¨
+                            ++k;
+                        }
+                    }
+                    else continue;
+                }
+                else{
+                    int k = 0;
+                    for (auto &j : info){  // Öğ¸öÑ§ÉúÂ¼Èë
+                        Score s(v[i], temp[i][k]);
+                        j.score.push_back(s);
+                        ++k;
+                    }
+                }
+            }
+            cout << "Ñ§ÉúÊı¾İÂ¼ÈëÍê±Ï" << endl;
+        }
+        else{
+            cout << "ÎÄ¼şÎŞ·¨´ò¿ª" << endl;
+            return;
+        }
+        ifs.close();
     }
 }
 
@@ -318,7 +427,8 @@ void StudentManager::displayAllStudentScores(){  // Êä³öÈ«²¿Ñ§Éú³É¼¨
     for (auto &i : info){
         cout << "Ñ§ºÅ: " << i.student_number << "\tĞÕÃû: " << i.name << "\t";
         for (auto &j : i.score){
-            cout << j.subject << ": " << j.score << "\t";
+            if (j.score == -1) cout << j.subject << ": ÎŞ³É¼¨\t";
+            else cout << j.subject << ": " << j.score << "\t";
         }
         cout << endl;
     }
@@ -364,8 +474,72 @@ void StudentManager::findClass(void (*pointerToFunc)(list<Student>::iterator &i)
     }
 }
 
-void StudentManager::modifyStudentScore() {  // ĞŞ¸ÄÑ§Éú³É¼¨
+void StudentManager::modifyStudentScoreFunction(list<Student>::iterator &i) {  // ĞŞ¸ÄÑ§Éú³É¼¨
+    if (info.empty()){
+        cout << "Ã»ÓĞÈÎºÎÑ§ÉúĞÅÏ¢£¬ÇëÌí¼ÓÑ§Éú" << endl;
+        return;
+    }
+    if (i->score.empty()){
+        cout << "Ã»ÓĞÈÎºÎµÄ¿ÆÄ¿ĞÅÏ¢£¬Çëµ½ÅúÁ¿Â¼ÈëÑ§Éú³É¼¨ĞÂ½¨¿ÆÄ¿" << endl;
+        return;
+    }
+    string subjectName;
+    cout << "ÇëÊäÈëÒªĞŞ¸ÄµÄ¿ÆÄ¿:" << endl;
+    int k = 1;
+    for (auto &j : info.front().score){
+        cout << k++ << ". " << j.subject << endl;
+    }
+    cin >> subjectName;
+    int n;
+    cout << "ÇëÊäÈë·ÖÊı:" << endl;
+    cin >> n;
+    auto index = find_if(i->score.begin(), i->score.end(), FindBasedOnString(subjectName));  // »ñÈ¡Ä¿±êµü´úÆ÷
+    if (index != i->score.end()){
+        index->score = n;
+    }
+    else{
+        cout << "¿ÆÄ¿²»´æÔÚ" << endl;
+    }
+}
 
+void StudentManager::modifyStudentScore() {
+    cout << "ÇëÑ¡Ôñ²éÕÒ·½Ê½: " << endl;
+    cout << "1. Ñ§ºÅ" << endl;
+    cout << "2. ĞÕÃû" << endl;
+    int mode = 0;
+    cin >> mode;
+    if (mode == 1){
+        int searchNum = 0;
+        cout << "ÇëÊäÈëÑ§ÉúÑ§ºÅ:" << endl;
+        cin >> searchNum;
+        auto index = findStudent(searchNum);
+        if (index != info.end()){
+            modifyStudentScoreFunction(index);
+        }
+        else{
+            cout << "²é²»µ½´ËÑ§Éú" << endl;
+        }
+    }
+    else if (mode == 2){
+        string searchName;
+        cout << "ÇëÊäÈëÑ§ÉúĞÕÃû: ";
+        cin >> searchName;
+        vector<list<Student>::iterator> v = findStudent(searchName);
+        if (!v.empty()){
+            int j = 1;
+            for (auto &i : v){
+                cout << "ĞòºÅ: " << j++ << "\t";
+                displayStudentInfo(i);
+            }
+            cout << "ÊäÈëÒªĞŞ¸ÄµÄÑ§ÉúµÄĞòºÅ: ";
+            int n;
+            cin >> n;
+            modifyStudentScoreFunction(v[n-1]);
+        }
+        else {
+            cout << "²é²»µ½´ËÑ§Éú" << endl;
+        }
+    }
 }
 
 bool FindBasedOnNum::operator()(Student &s) const{
