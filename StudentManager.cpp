@@ -17,18 +17,18 @@ StudentManager::StudentManager() {
 StudentManager::~StudentManager() = default;
 
 void StudentManager::showMenu() {  // 打印菜单
-    cout << "********************************" << endl;
-    cout << "********欢迎使用学生管理系统********" << endl;
-    cout << "*********1. 添加学生**************" << endl;
-    cout << "*********2. 查找学生信息***********" << endl;
-    cout << "*********3. 修改学生信息***********" << endl;
-    cout << "*********4. 删除学生信息***********" << endl;
-    cout << "*********5. 查看所有学生信息********" << endl;
-    cout << "*********6. 批量录入学生成绩********" << endl;
-    cout << "*********7. 查看所有学生成绩********" << endl;
-    cout << "*********8. 修改学生成绩***********" << endl;
-    cout << "*********9. 退出系统**************" << endl;
-    cout << "*********************************" << endl;
+    cout << "************************************" << endl;
+    cout << "*       欢迎使用学生管理系统       *" << endl;
+    cout << "*         1.添加学生               *" << endl;
+    cout << "*         2.查找学生信息           *" << endl;
+    cout << "*         3.修改学生信息           *" << endl;
+    cout << "*         4.删除学生信息           *" << endl;
+    cout << "*         5.查看所有学生信息       *" << endl;
+    cout << "*         6.批量录入学生成绩       *" << endl;
+    cout << "*         7.查看所有学生成绩       *" << endl;
+    cout << "*         8.修改学生成绩           *" << endl;
+    cout << "*         9.退出系统               *" << endl;
+    cout << "************************************" << endl;
 }
 
 void StudentManager::inputStudentInfo() {  // 将外部文件数据加载到内存中
@@ -349,9 +349,9 @@ void StudentManager::uploadStudentScores(){  // 学生成绩录入
                 if (d == "-") break;  // 表示科目类型录入结束
                 v.push_back(d);
             }
-            int temp[v.size()][info.size()];  // 先临时用数组存成绩
-            for (int i = 0; i < v.size(); ++i) {
-                for (int j = 0; j < info.size(); ++j) {
+            int temp[info.size()][v.size()];  // 先临时用数组存成绩，第一层遍历成绩，第二层遍历学生
+            for (int i = 0; i < info.size(); ++i) {
+                for (int j = 0; j < v.size(); ++j) {
                     ifs >> temp[i][j];
                 }
             }
@@ -365,7 +365,7 @@ void StudentManager::uploadStudentScores(){  // 学生成绩录入
                         int k = 0;
                         for (auto &j : info){  // 逐个学生录入
                             index = find_if(j.score.begin(), j.score.end(), FindBasedOnString(v[i]));  // 寻找成绩位置
-                            index->score = temp[i][k];  // 修改成绩
+                            index->score = temp[k][i];  // 修改成绩
                             ++k;
                         }
                     }
@@ -374,7 +374,7 @@ void StudentManager::uploadStudentScores(){  // 学生成绩录入
                 else{
                     int k = 0;
                     for (auto &j : info){  // 逐个学生录入
-                        Score s(v[i], temp[i][k]);
+                        Score s(v[i], temp[k][i]);
                         j.score.push_back(s);
                         ++k;
                     }
@@ -483,23 +483,18 @@ void StudentManager::modifyStudentScoreFunction(list<Student>::iterator &i) {  /
         cout << "没有任何的科目信息，请到批量录入学生成绩新建科目" << endl;
         return;
     }
-    string subjectName;
+    int choice;
     cout << "请输入要修改的科目:" << endl;
     int k = 1;
     for (auto &j : info.front().score){
         cout << k++ << ". " << j.subject << endl;
     }
-    cin >> subjectName;
+    cin >> choice;
     int n;
     cout << "请输入分数:" << endl;
     cin >> n;
-    auto index = find_if(i->score.begin(), i->score.end(), FindBasedOnString(subjectName));  // 获取目标迭代器
-    if (index != i->score.end()){
-        index->score = n;
-    }
-    else{
-        cout << "科目不存在" << endl;
-    }
+    i->score[choice-1].score = n;  // 修改成绩
+    cout << "成绩修改成功" << endl;
 }
 
 void StudentManager::modifyStudentScore() {
