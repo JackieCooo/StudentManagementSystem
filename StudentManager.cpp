@@ -75,6 +75,12 @@ void StudentManager::addStudentFunction() {  // 添加学生功能函数
     string t;
     cout << "请输入学生学号: ";
     cin >> student_number;
+    while (true){
+        auto index = find_if(info.begin(), info.end(), FindBasedOnNum(student_number));  // 检查是否已经有此学号
+        if (index == info.end()) break;
+        cout << "已有该学号，请重新输入: ";
+        cin >> student_number;
+    }
     cout << "请输入学生名字: ";
     cin >> name;
     cout << "请输入学生性别: ";
